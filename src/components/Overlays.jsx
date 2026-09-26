@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { ACHIEVEMENTS } from '../data.js';
+import { ACHIEVEMENTS, SECRET_LEVEL } from '../data.js';
 import { Sprite } from './Pixel.jsx';
 
 /** "Achievement unlocked" banner that slides down from the top. */
@@ -65,9 +65,9 @@ export function AchievementsModal({ ach, S, onClose }) {
 export function SecretModal({ onClose }) {
   return (
     <Modal label="Cheat code accepted" className="modal--secret" onClose={onClose}>
-      <span className="secret-num">99</span>
+      <span className="secret-num">{SECRET_LEVEL}</span>
       <h2>Cheat code accepted</h2>
-      <p>+999 XP. The level cap was 8; you're now level 99. A new realm, Arcane, is waiting in Options.</p>
+      <p>+999 XP. You're now level {SECRET_LEVEL}. A new realm, Arcane, is waiting in Options.</p>
       <span className="secret-credit">Designed and built by Mahmoud Khaled.</span>
       <button type="button" className="btn btn--on btn--lg" onClick={onClose}>
         Continue

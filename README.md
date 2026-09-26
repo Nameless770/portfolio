@@ -148,7 +148,7 @@ The mouse and touch work everywhere too.
 <details>
 <summary>The secret (spoiler)</summary>
 
-Byte reveals it once you've seen everything, but it works any time: **↑ ↑ ↓ ↓ ← → ← → B A**. It jumps you to level 99 and unlocks the Arcane realm.
+Byte reveals it once you've seen everything, but it works any time: **↑ ↑ ↓ ↓ ← → ← → B A**. It sets you to level 3 and unlocks the Arcane realm.
 
 </details>
 

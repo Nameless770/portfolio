@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { ACHIEVEMENTS, PROFILE, TABS, XP_KEYS } from '../data.js';
+import { ACHIEVEMENTS, PROFILE, SECRET_LEVEL, TABS, XP_KEYS } from '../data.js';
 import { CursorSlot, Sprite } from './Pixel.jsx';
 import GuideBox from './GuideBox.jsx';
 import StatusTab from './tabs/StatusTab.jsx';
@@ -13,7 +13,7 @@ import QuitTab from './tabs/QuitTab.jsx';
 
 export default function GameScreen({ s, S, heroSrc, actions, contentRef, hudRef }) {
   const count = XP_KEYS.filter((k) => s.seen[k]).length;
-  const level = s.secret ? 99 : Math.min(8, 1 + count);
+  const level = s.secret ? SECRET_LEVEL : Math.min(8, 1 + count);
 
   return (
     <>
