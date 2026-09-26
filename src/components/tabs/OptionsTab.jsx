@@ -1,16 +1,11 @@
 import { useState } from 'react';
 import { REALMS } from '../../world.js';
 import { SOUND_TEST } from '../../sfx.js';
+import { TRACKS } from '../../tracks.js';
 import { CursorSlot, PageHead, Sprite } from '../Pixel.jsx';
 
 export default function OptionsTab({ s, actions }) {
   const realms = Object.values(REALMS).filter((p) => p.id !== 'arcane' || s.secret);
-  const toggles = [
-    { label: 'Sound effects', desc: 'Chiptune blips on moves and unlocks (M key)', value: s.sound, set: actions.setSound },
-    { label: "Byte's voice", desc: 'Byte chirps while he talks', value: s.voice, set: actions.setVoice },
-    { label: 'Guide', desc: 'Byte comments as you explore', value: s.guide, set: actions.setGuide },
-    { label: 'Scanlines', desc: 'Old CRT screen effect', value: s.scan, set: actions.setScan },
-  ];
 
   return (
     <section className="page options-page">
@@ -56,25 +51,57 @@ export default function OptionsTab({ s, actions }) {
 
       <div className="opt-group opt-group--settings">
         <span className="kicker">Settings</span>
-        {toggles.map((t) => (
-          <div key={t.label} className="toggle">
-            <span className="toggle-text">
-              <span className="toggle-label">{t.label}</span>
-              <span className="toggle-desc">{t.desc}</span>
-            </span>
-            <span className="toggle-btns" role="group" aria-label={t.label}>
-              <button type="button" className={`btn btn--chip ${t.value ? 'btn--on' : 'btn--off'}`} aria-pressed={t.value} onClick={() => t.set(true)}>
-                ON
-              </button>
-              <button type="button" className={`btn btn--chip ${!t.value ? 'btn--on' : 'btn--off'}`} aria-pressed={!t.value} onClick={() => t.set(false)}>
-                OFF
-              </button>
-            </span>
-          </div>
-        ))}
+        <Toggle label="Music" desc="Classical pieces in chiptune (N key)" value={s.music} set={actions.setMusic} />
+        <Jukebox track={s.track} actions={actions} />
+        <Toggle label="Sound effects" desc="Chiptune blips on moves and unlocks (M key)" value={s.sound} set={actions.setSound} />
+        <Toggle label="Byte's voice" desc="Byte chirps while he talks" value={s.voice} set={actions.setVoice} />
+        <Toggle label="Guide" desc="Byte comments as you explore" value={s.guide} set={actions.setGuide} />
+        <Toggle label="Scanlines" desc="Old CRT screen effect" value={s.scan} set={actions.setScan} />
         <SoundTest secret={s.secret} actions={actions} />
       </div>
     </section>
+  );
+}
+
+function Toggle({ label, desc, value, set }) {
+  return (
+    <div className="toggle">
+      <span className="toggle-text">
+        <span className="toggle-label">{label}</span>
+        <span className="toggle-desc">{desc}</span>
+      </span>
+      <span className="toggle-btns" role="group" aria-label={label}>
+        <button type="button" className={`btn btn--chip ${value ? 'btn--on' : 'btn--off'}`} aria-pressed={value} onClick={() => set(true)}>
+          ON
+        </button>
+        <button type="button" className={`btn btn--chip ${!value ? 'btn--on' : 'btn--off'}`} aria-pressed={!value} onClick={() => set(false)}>
+          OFF
+        </button>
+      </span>
+    </div>
+  );
+}
+
+/** Pick the piece: stepping plays it straight away (and turns the music on). */
+function Jukebox({ track, actions }) {
+  const t = TRACKS[track];
+  const step = (d) => actions.pickTrack((track + d + TRACKS.length) % TRACKS.length);
+
+  return (
+    <div className="toggle">
+      <span className="toggle-text">
+        <span className="toggle-label">Jukebox</span>
+        <span className="toggle-desc">{t.composer}</span>
+      </span>
+      <span className="sound-test">
+        <button type="button" className="btn btn--chip" aria-label="Previous piece" onClick={() => step(-1)}>◀</button>
+        <span className="sound-test-name" aria-live="polite">
+          <span className="sound-test-num">{String(track + 1).padStart(2, '0')}</span>
+          {t.title}
+        </span>
+        <button type="button" className="btn btn--chip" aria-label="Next piece" onClick={() => step(1)}>▶</button>
+      </span>
+    </div>
   );
 }
 

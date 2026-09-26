@@ -142,20 +142,44 @@ export function scheduleSfx(C, dest, name, t0, pitch = 1) {
 
 let ac = null;
 let jingleFreeAt = 0;
+const jingleListeners = new Set();
+
+/**
+ * The page's one AudioContext, shared by sound effects and music. Browsers only let audio
+ * start after a click or key press, so the first call should come from one. Null without Web Audio.
+ */
+export function audioContext() {
+  try {
+    if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
+    if (ac.state === 'suspended' && !document.hidden) ac.resume();
+    return ac;
+  } catch {
+    return null;
+  }
+}
+
+/** Call `fn(startTime, seconds)` whenever a jingle is scheduled (the music ducks under them). */
+export function onJingle(fn) {
+  jingleListeners.add(fn);
+  return () => jingleListeners.delete(fn);
+}
 
 /** Play an effect now (jingles queue behind any jingle already playing). `pitch` scales every tone. */
 export function playSfx(name, { pitch = 1 } = {}) {
   try {
-    if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
-    if (ac.state === 'suspended') ac.resume();
-    let t0 = ac.currentTime + 0.01;
+    const C = audioContext();
+    if (!C) return;
+    let t0 = C.currentTime + 0.01;
     const jingle = JINGLES.has(name);
     if (jingle) {
       t0 = Math.max(t0, jingleFreeAt);
-      if (t0 - ac.currentTime > 2) return; // don't let a backlog build up
+      if (t0 - C.currentTime > 2) return; // don't let a backlog build up
     }
-    const length = scheduleSfx(ac, ac.destination, name, t0, pitch);
-    if (jingle) jingleFreeAt = t0 + length + 0.06;
+    const length = scheduleSfx(C, C.destination, name, t0, pitch);
+    if (jingle) {
+      jingleFreeAt = t0 + length + 0.06;
+      jingleListeners.forEach((fn) => fn(t0, length));
+    }
   } catch {
     // Audio is optional; ignore browsers that block or lack Web Audio.
   }

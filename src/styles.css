@@ -36,6 +36,7 @@ h1, h2, h3 { letter-spacing: -0.015em; }
   --bevel: inset -3px -3px 0 rgba(0, 0, 0, .22), inset 3px 3px 0 rgba(255, 255, 255, .28);
   position: relative;
   min-height: 100vh;
+  overflow-x: clip; /* nothing may widen the page on phones (clip, unlike hidden, keeps the sticky tab strip working) */
   background: var(--c-bg);
   color: var(--c-ink);
   font-family: 'Pixelify Sans', monospace;
@@ -495,8 +496,10 @@ h1, h2, h3 { letter-spacing: -0.015em; }
 @media (max-width: 600px) {
   .title-tagline { font-size: 18px; }
   .hud { gap: 12px; }
-  .hud-actions { margin-left: 0; gap: 10px; }
+  .hud-actions { margin-left: 0; gap: 10px; width: 100%; display: grid; grid-template-columns: 1fr 1fr; } /* 2×2, not a stray wrapped button */
+  .hud-actions .btn { justify-content: center; }
   .xp-bar { width: 120px; }
+  .xp-pop { left: auto; right: 0; margin-left: 0; top: -20px; } /* float above the counter, not off-screen */
   .status-side { flex: 1 1 100%; }
   .status-row { gap: 26px; }
   .stat { grid-template-columns: 104px minmax(0, 1fr) 40px; gap: 10px; }

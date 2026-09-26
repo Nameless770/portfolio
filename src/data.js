@@ -158,6 +158,7 @@ export const LINES = {
   quit: 'Leaving already? Your progress stays until you close the page.',
   realm: 'Realm changed. The world shifts around you.',
   locked: "That realm is sealed. See every page first, then I'll tell you the way in.",
+  nowPlaying: 'Now playing: {title}, by {composer}.',
   done: "You've seen everything. An old code still works here: ↑ ↑ ↓ ↓ ← → ← → B A",
   secret: 'Cheat code accepted. Not many travellers find that one.',
 };
@@ -169,7 +170,8 @@ export const DEFAULTS = {
   realm: 'moon', // moon | elder | ember | royal
   scanlines: false,
   startScene: 'title', // title | game | plain
-  sound: false, // browsers only allow audio after a click/keypress; press M or use the HUD button
+  music: true, // classical music; starts with New Game (browsers only allow audio after a click/keypress). N or the HUD button toggles it
+  sound: false, // sound effects; press M or use the HUD button
   voice: true, // Byte "talks" in blips while his text types out (only when sound is on)
   guide: true,
 };

@@ -67,6 +67,9 @@ function Hud({ s, S, heroSrc, level, count, actions, hudRef }) {
           <Sprite src={S.trophy} />
           {achCount}
         </button>
+        <button type="button" className="btn" onClick={() => actions.setMusic(!s.music)} aria-pressed={s.music}>
+          {s.music ? 'Music: On' : 'Music: Off'}
+        </button>
         <button type="button" className="btn" onClick={() => actions.setSound(!s.sound)} aria-pressed={s.sound}>
           {s.sound ? 'Sound: On' : 'Sound: Off'}
         </button>

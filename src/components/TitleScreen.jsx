@@ -29,6 +29,7 @@ export default function TitleScreen({ items, activeIdx, onHover }) {
         <span>↑ ↓ choose</span>
         <span>Enter select</span>
         <span>M sound</span>
+        <span>N music</span>
         <span>Mouse works too</span>
       </div>
     </div>

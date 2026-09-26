@@ -2,7 +2,9 @@ import { Component, createRef } from 'react';
 import { ACHIEVEMENTS, CATS, CV_URL, DEFAULTS, ITEMS, KONAMI, LINES, PROFILE, TABS, XP_KEYS } from './data.js';
 import { getSprites } from './sprites.js';
 import { REALMS, drawWorld, realmVars } from './world.js';
-import { playSfx } from './sfx.js';
+import { audioContext, playSfx } from './sfx.js';
+import { onTrackChange, playMusic, stopMusic } from './music.js';
+import { TRACKS } from './tracks.js';
 import TitleScreen from './components/TitleScreen.jsx';
 import GameScreen from './components/GameScreen.jsx';
 import PlainCV from './components/PlainCV.jsx';
@@ -36,6 +38,9 @@ export default class App extends Component {
     toastTitle: '',
     toastOn: false,
     npc: { text: '', id: 0 },
+    music: DEFAULTS.music,
+    musicArmed: false, // set by the first New Game or music toggle: browsers only allow audio after one
+    track: 0,
     sound: DEFAULTS.sound,
     voice: DEFAULTS.voice,
     guide: DEFAULTS.guide,
@@ -71,6 +76,18 @@ export default class App extends Component {
       if (on === this.state.sound) return;
       this.setState({ sound: on });
       playSfx(on ? 'powerOn' : 'powerOff');
+    },
+    setMusic: (on) => {
+      if (on === this.state.music && this.state.musicArmed) return;
+      this.setState({ music: on, musicArmed: true });
+      this.beep(on ? 'toggleOn' : 'toggleOff');
+    },
+    // On the title screen music is "on" but silent until the visitor acts, so N starts it rather than muting it.
+    toggleMusic: () => this.actions.setMusic(!(this.state.music && this.state.musicArmed)),
+    pickTrack: (i) => {
+      const t = TRACKS[i];
+      this.setState({ track: i, music: true, musicArmed: true });
+      this.say(LINES.nowPlaying.replace('{title}', t.title).replace('{composer}', t.composer));
     },
     setVoice: (on) => this.toggle('voice', on),
     setGuide: (on) => this.toggle('guide', on),
@@ -120,11 +137,17 @@ export default class App extends Component {
     window.addEventListener('mousemove', this.onMove);
     this.onKey = (e) => this.handleKey(e);
     window.addEventListener('keydown', this.onKey);
+    // If music was started without a click (e.g. startScene 'game'), the browser holds it back: wake it on the first one.
+    this.onPointer = () => { if (this.state.music && this.state.musicArmed) audioContext(); };
+    window.addEventListener('pointerdown', this.onPointer);
 
     this.blinkT = setInterval(() => {
       this.setState({ blink: true });
       this.later(() => this.setState({ blink: false }), 160);
     }, 3600);
+
+    // The playlist moves on by itself; keep the jukebox display in step.
+    this.offTrack = onTrackChange((i) => { if (i !== this.state.track) this.setState({ track: i }); });
 
     if (this.state.scene === 'game') this.startGame();
   }
@@ -135,10 +158,21 @@ export default class App extends Component {
     this.timers.forEach(clearTimeout);
     window.removeEventListener('mousemove', this.onMove);
     window.removeEventListener('keydown', this.onKey);
+    window.removeEventListener('pointerdown', this.onPointer);
+    this.offTrack?.();
+    stopMusic();
   }
 
   componentDidUpdate(_, prev) {
     if (prev.realm !== this.state.realm) this.applyPageTheme();
+    this.syncMusic();
+  }
+
+  // Music plays once the visitor has started it (browsers need a click first), except on the plain CV page.
+  syncMusic() {
+    const s = this.state;
+    if (s.music && s.musicArmed && s.scene !== 'plain') playMusic(s.track);
+    else stopMusic();
   }
 
   /** setTimeout that is cleared on unmount. */
@@ -251,7 +285,7 @@ export default class App extends Component {
 
   startGame() {
     const first = !this.state.seen.status;
-    this.setState({ scene: 'game', tab: 'status' });
+    this.setState({ scene: 'game', tab: 'status', musicArmed: true });
     this.beep(first ? 'start' : 'select');
     if (first) this.gain('status');
     this.say(first ? LINES.start : LINES.status);
@@ -303,6 +337,7 @@ export default class App extends Component {
 
   handleKey(e) {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
+    this.onPointer(); // a key press counts as a gesture too
     const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
     this.keys = [...this.keys, k].slice(-KONAMI.length);
     if (this.keys.join() === KONAMI.join()) { this.triggerSecret(); return; }
@@ -317,6 +352,10 @@ export default class App extends Component {
     }
     if (k === 'm') {
       this.actions.setSound(!s.sound);
+      return;
+    }
+    if (k === 'n') {
+      this.actions.toggleMusic();
       return;
     }
     if (s.achOpen || s.secretOpen) return;
