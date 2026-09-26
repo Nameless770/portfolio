@@ -37,7 +37,7 @@ A portfolio and CV presented as a retro RPG. Start a new game, explore the menu,
 - **Five colour realms** re-theme the interface and the world behind it. One stays locked until you find the secret.
 - **An animated pixel-art world** painted on a 320×180 canvas: a dithered sky, twinkling stars, a castle, fireflies and parallax that follows the mouse.
 - **Classical music in chiptune**: Minuet in G, Canon in D, Für Elise and Ode to Joy, arranged for 8-bit voices and played by a small Web Audio sequencer. It starts with New Game, dips under reward jingles and pauses in a hidden tab. Press **N** or use the HUD button to turn it off, or pick a piece in Options → Jukebox.
-- **34 chiptune sound effects**, synthesised live with the Web Audio API. Sound is off until you press **M** or use the HUD button, and a Sound test in Options plays 24 of them.
+- **34 chiptune sound effects**, synthesised live with the Web Audio API. They're on from the start; press **M** or use the HUD button to turn them off. A Sound test in Options plays 24 of them.
 - **Plain CV mode**: the whole CV on one readable page, plus a PDF download.
 - **Works on phones**: a single-column layout with a sticky tab strip.
 - **Accessible**: full keyboard control, dialogs take focus and hand it back, screen readers hear Byte's lines and trophy alerts, and the typing and blinking animations switch off when the system asks for reduced motion.

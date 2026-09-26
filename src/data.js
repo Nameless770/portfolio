@@ -171,7 +171,7 @@ export const DEFAULTS = {
   scanlines: false,
   startScene: 'title', // title | game | plain
   music: true, // classical music; starts with New Game (browsers only allow audio after a click/keypress). N or the HUD button toggles it
-  sound: false, // sound effects; press M or use the HUD button
+  sound: true, // sound effects; press M or use the HUD button to turn them off
   voice: true, // Byte "talks" in blips while his text types out (only when sound is on)
   guide: true,
 };

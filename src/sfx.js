@@ -149,6 +149,9 @@ const jingleListeners = new Set();
  * start after a click or key press, so the first call should come from one. Null without Web Audio.
  */
 export function audioContext() {
+  // Until the visitor's first click or key press the browser keeps audio locked, and anything
+  // scheduled meanwhile (like hover ticks on the title screen) would all play at once on unlock.
+  if (globalThis.navigator?.userActivation?.hasBeenActive === false) return null;
   try {
     if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
     if (ac.state === 'suspended' && !document.hidden) ac.resume();
