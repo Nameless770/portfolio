@@ -164,7 +164,7 @@ export const LINES = {
 };
 
 export const KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-export const SECRET_LEVEL = 3; // the level the secret code sets
+export const SECRET_LEVEL = 99; // the level the secret code sets
 
 // Starting settings.
 export const DEFAULTS = {

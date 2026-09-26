@@ -67,7 +67,7 @@ export function SecretModal({ onClose }) {
     <Modal label="Cheat code accepted" className="modal--secret" onClose={onClose}>
       <span className="secret-num">{SECRET_LEVEL}</span>
       <h2>Cheat code accepted</h2>
-      <p>+999 XP. You're now level {SECRET_LEVEL}. A new realm, Arcane, is waiting in Options.</p>
+      <p>+999 XP. The level cap was 8; you're now level {SECRET_LEVEL}. A new realm, Arcane, is waiting in Options.</p>
       <span className="secret-credit">Designed and built by Mahmoud Khaled.</span>
       <button type="button" className="btn btn--on btn--lg" onClick={onClose}>
         Continue
